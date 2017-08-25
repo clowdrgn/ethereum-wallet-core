@@ -1,6 +1,7 @@
 package util.web3j.wallet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import util.common.Numeric;
 import util.web3j.transcation.RawTransaction;
 import util.web3j.transcation.TransactionEncoder;
 

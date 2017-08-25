@@ -13,7 +13,7 @@ import util.web3j.abi.datatypes.Type;
 import util.web3j.abi.datatypes.Ufixed;
 import util.web3j.abi.datatypes.Uint;
 import util.web3j.abi.datatypes.Utf8String;
-import util.web3j.wallet.Numeric;
+import util.common.Numeric;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

@@ -17,7 +17,7 @@ import util.web3j.wallet.ECKeyPair;
 import util.web3j.wallet.Hash;
 import util.web3j.wallet.Keys;
 import util.web3j.wallet.MnemonicModel;
-import util.web3j.wallet.Numeric;
+import util.common.Numeric;
 import util.web3j.wallet.Sign;
 import util.web3j.wallet.WalletUtils;
 

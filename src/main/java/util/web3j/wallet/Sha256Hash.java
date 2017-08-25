@@ -17,7 +17,7 @@
 package util.web3j.wallet;
 
 import com.google.common.io.ByteStreams;
-import util.web3j.wallet.Numeric;
+import util.common.Numeric;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,7 +1,7 @@
 package util.web3j.transcation;
 
 
-import util.web3j.wallet.Numeric;
+import util.common.Numeric;
 
 import java.math.BigInteger;
 

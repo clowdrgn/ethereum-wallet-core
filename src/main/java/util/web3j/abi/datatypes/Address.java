@@ -2,7 +2,7 @@ package util.web3j.abi.datatypes;
 
 
 import util.web3j.wallet.Keys;
-import util.web3j.wallet.Numeric;
+import util.common.Numeric;
 
 import java.math.BigInteger;
 

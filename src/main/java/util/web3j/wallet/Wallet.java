@@ -4,6 +4,7 @@ import com.lambdaworks.crypto.SCrypt;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
+import util.common.Numeric;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
