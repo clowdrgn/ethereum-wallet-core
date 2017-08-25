@@ -21,7 +21,7 @@ package util.mnemonic;
 import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.common.Numeric;
+import util.web3j.wallet.Numeric;
 import util.web3j.wallet.Sha256Hash;
 
 import java.io.BufferedReader;
