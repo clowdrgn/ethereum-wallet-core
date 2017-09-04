@@ -110,17 +110,23 @@ public class WalletHelper {
 
     /**
      * 创建钱包，返回包含公私钥和助记词的walletmodel
-     *
+     * isBip44=true,使用bip44协议生成
+     * isBip44=false,使用bip32生成
      * @return WalletModel
      */
-    public static WalletModel toMnemonic(String passphrase) throws Exception {
+    public static WalletModel toMnemonic(String passphrase,boolean isBip44) throws Exception {
         try {
             Random random = new Random();
             byte[] values = new byte[16];
             random.nextBytes(values);
             List<String> mnemonicCode = mc.toMnemonic(values);
             byte[] seed = MnemonicCode.toSeed(mnemonicCode, passphrase);
-            ECKeyPair ecKeyPair = createBip44NodeFromSeed(seed);
+            ECKeyPair ecKeyPair = null;
+            if(isBip44){
+                ecKeyPair = createBip44NodeFromSeed(seed);
+            }else {
+                ecKeyPair = getECKeyPairFromSeed(seed);
+            }
             return new WalletModel(ecKeyPair, mnemonicCode);
         } catch (MnemonicException.MnemonicLengthException e) {
             e.printStackTrace();
@@ -130,13 +136,20 @@ public class WalletHelper {
 
     /**
      * 传入助记词，返回公私钥
-     *
+     * isBip44=true,使用bip44协议生成
+     * isBip44=false,使用bip32生成
      * @param mnemonicCode
      * @return
      */
-    public static ECKeyPair fromMnemonic(List<String> mnemonicCode,String passphase) throws Exception {
+    public static ECKeyPair fromMnemonic(List<String> mnemonicCode,String passphase,boolean isBip44) throws Exception {
         byte[] seed = mc.toSeed(mnemonicCode,passphase);
-        return createBip44NodeFromSeed(seed);
+        ECKeyPair ecKeyPair = null;
+        if(isBip44){
+            ecKeyPair = createBip44NodeFromSeed(seed);
+        }else {
+            ecKeyPair = getECKeyPairFromSeed(seed);
+        }
+        return ecKeyPair;
     }
 
     /**
@@ -273,7 +286,7 @@ public class WalletHelper {
 //        List<String> mnemonicCode = walletModel.getMnemonicCode();
 //        System.out.println(mnemonicCode);
 //        System.out.println("tomnemonic took {"+(System.currentTimeMillis() - start)+"}ms");
-        ECKeyPair ecKeyPair = fromMnemonic(Arrays.asList("brand","course","select","lady", "note", "quiz", "slender", "antique", "shoot", "sauce", "coach", "bacon"),"");
+        ECKeyPair ecKeyPair = fromMnemonic(Arrays.asList("brand","course","select","lady", "note", "quiz", "slender", "antique", "shoot", "sauce", "coach", "bacon"),"",true);
 //        ECKeyPair ecKeyPair1 = walletModel.getEcKeyPair();
 //        String address = Keys.getAddress(walletModel.getEcKeyPair());
         String address = Keys.getAddress(ecKeyPair);
