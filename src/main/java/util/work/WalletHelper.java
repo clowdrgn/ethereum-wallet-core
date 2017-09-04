@@ -2,6 +2,10 @@ package util.work;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.bip44.HdKeyNode;
+import util.bip44.NetworkParameters;
+import util.hd.Derivation;
+import util.hd.ECKey;
 import util.hd.ExtendedKey;
 import util.mnemonic.MnemonicCode;
 import util.mnemonic.MnemonicException;
@@ -109,14 +113,14 @@ public class WalletHelper {
      *
      * @return WalletModel
      */
-    public static WalletModel toMnemonic() {
+    public static WalletModel toMnemonic(String passphrase) throws Exception {
         try {
             Random random = new Random();
             byte[] values = new byte[16];
             random.nextBytes(values);
             List<String> mnemonicCode = mc.toMnemonic(values);
-            byte[] seed = MnemonicCode.toSeed(mnemonicCode, "");
-            ECKeyPair ecKeyPair = getECKeyPairFromSeed(seed);
+            byte[] seed = MnemonicCode.toSeed(mnemonicCode, passphrase);
+            ECKeyPair ecKeyPair = createBip44NodeFromSeed(seed);
             return new WalletModel(ecKeyPair, mnemonicCode);
         } catch (MnemonicException.MnemonicLengthException e) {
             e.printStackTrace();
@@ -130,15 +134,35 @@ public class WalletHelper {
      * @param mnemonicCode
      * @return
      */
-    public static ECKeyPair fromMnemonic(List<String> mnemonicCode) {
-        byte[] seed = mc.toSeed(mnemonicCode,"");
-        return getECKeyPairFromSeed(seed);
+    public static ECKeyPair fromMnemonic(List<String> mnemonicCode,String passphase) throws Exception {
+        byte[] seed = mc.toSeed(mnemonicCode,passphase);
+        return createBip44NodeFromSeed(seed);
     }
 
-    private static ECKeyPair getECKeyPairFromSeed(byte[] seed){
+    /**
+     * 错误的用法，直接将seed当作keyhash使用，少了一次HmacSHA512。逐渐废弃不再使用
+     * @param seed
+     * @return
+     * @throws Exception
+     */
+    @Deprecated
+    private static ECKeyPair getECKeyPairFromSeed(byte[] seed) throws Exception {
         ExtendedKey extendedKey = new ExtendedKey(seed);
         BigInteger pri = extendedKey.getECKey().getPriv();
         ECKeyPair ecKeyPair = ECKeyPair.create(pri);
+        return ecKeyPair;
+    }
+
+    /**
+     * bip44 路径为"m/44'/60'/0'／0／0"，m/44'/60'为ethereum规定的路径，均为hardened child node。
+     * 其后的/0'/0/0可传入。注意第一个0'调用createHardenedChildNode,其他两个调用createChildNode
+     * @param seed
+     * @return
+     */
+    private static ECKeyPair createBip44NodeFromSeed(byte[] seed){
+        HdKeyNode node = HdKeyNode.fromSeed(seed).createHardenedChildNode(44).createHardenedChildNode(60).createHardenedChildNode(0).createChildNode(0).createChildNode(0);
+        byte[] privateKeyByte = node.getPrivateKey().getPrivateKeyBytes();
+        ECKeyPair ecKeyPair = ECKeyPair.create(privateKeyByte);
         return ecKeyPair;
     }
 
@@ -239,22 +263,25 @@ public class WalletHelper {
         return result;
     }
 
-    public static void main(String[] args) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException, CipherException, IOException, SignatureException {
-        System.out.println(toCheckSumAddress("0x66de1dc4541e5e0ff54c3d9501ccf0da36e18390"));
-        System.out.println(validateChecksumAddress("0x66de1Dc4541E5e0Ff54c3d9501CCf0da36E18390"));
-//        String walletLocation = "/Users/fanjl/eth/testnet/data/keystore/";
+    public static void main(String[] args) throws Exception {
+//        System.out.println(toCheckSumAddress("0x66de1dc4541e5e0ff54c3d9501ccf0da36e18390"));
+//        System.out.println(validateChecksumAddress("0x66de1Dc4541E5e0Ff54c3d9501CCf0da36E18390"));
+//        String walletLocation = "/Users/fanjl/testkey";
         //mnemonic,生成钱包，获取到助记词和公私钥
 //        long start = System.currentTimeMillis();
-//        WalletModel walletModel = toMnemonic();
+//        WalletModel walletModel = toMnemonic("12345678");
 //        List<String> mnemonicCode = walletModel.getMnemonicCode();
 //        System.out.println(mnemonicCode);
 //        System.out.println("tomnemonic took {"+(System.currentTimeMillis() - start)+"}ms");
-//        ECKeyPair ecKeyPair = fromMnemonic(mnemonicCode);
+        ECKeyPair ecKeyPair = fromMnemonic(Arrays.asList("brand","course","select","lady", "note", "quiz", "slender", "antique", "shoot", "sauce", "coach", "bacon"),"");
 //        ECKeyPair ecKeyPair1 = walletModel.getEcKeyPair();
-//        Keys.getAddress(ecKeyPair);
-//
+//        String address = Keys.getAddress(walletModel.getEcKeyPair());
+        String address = Keys.getAddress(ecKeyPair);
 //        System.out.println(ecKeyPair.getPrivateKey());
-//        System.out.println(ecKeyPair1.getPrivateKey());
+//        System.out.println(Numeric.toHexStringNoPrefix(ecKeyPair.getPrivateKey()));
+//        System.out.println(walletModel.getEcKeyPair().getPrivateKey());
+//        System.out.println(Numeric.toHexStringNoPrefix(walletModel.getEcKeyPair().getPrivateKey()));
+        System.out.println(address);
 //
 //        String fileName = generatePriKeyFile("pwd", ecKeyPair, walletLocation);
 //        System.out.println(fileName);
@@ -267,8 +294,9 @@ public class WalletHelper {
 //        String code = WalletUtils.loadMnemonicCipher("pwd",mnemonicModel);
 //        System.out.println(code);
 //        System.out.println(result);
-//        Credentials credentials = loadCredentials("123456",  "/Users/fanjl/UTC--2017-05-04T07-01-38.551002961Z--c6e76208d475844d2ac31744bd2a6420031fd066");
+//        Credentials credentials = loadCredentials("12345678",  "/Users/fanjl/testkey");
 //        System.out.println(credentials.getEcKeyPair().getPrivateKey());
+//        System.out.println(Keys.getAddress(credentials.getEcKeyPair()));
 //        Sign.SignatureData signatureData = signMsg("test", ecKeyPair);
 //        String address = recoverAddress("test", signatureData);
 //

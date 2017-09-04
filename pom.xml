@@ -9,74 +9,32 @@
     <version>1.0-SNAPSHOT</version>
 
 
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>oss.jfrog.org</id>-->
-            <!--<name>Repository from Bintray</name>-->
-            <!--<url>http://dl.bintray.com/ethereum/maven</url>-->
-        <!--</repository>-->
-        <!--<repository>-->
-            <!--<id>snapshots</id>-->
-            <!--<url>https://oss.sonatype.org/content/groups/public</url>-->
-            <!--<releases>-->
-                <!--<enabled>false</enabled>-->
-            <!--</releases>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
-    <!--</repositories>-->
-    <!--<distributionManagement>-->
-        <!--<repository>-->
-            <!--<id>sonatype-nexus-staging</id>-->
-            <!--<name>Nexus Release Repository</name>-->
-            <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-        <!--</repository>-->
-    <!--</distributionManagement>-->
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>maven-public</id>-->
-            <!--<name>maven-public</name>-->
-            <!--<url>http://198.216.6.189:8081/nexus/content/groups/public/</url>-->
-            <!--<releases>-->
-                <!--<enabled>true</enabled>-->
-                <!--<updatePolicy>always</updatePolicy>-->
-            <!--</releases>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-                <!--<updatePolicy>always</updatePolicy>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
-    <!--</repositories>-->
-    <!--<pluginRepositories>-->
-        <!--<pluginRepository>-->
-            <!--<id>maven-public</id>-->
-            <!--<name>local private nexus</name>-->
-            <!--<url>http://198.216.6.189:8081/nexus/content/groups/public/</url>-->
-            <!--<releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>-->
-            <!--<snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>-->
-        <!--</pluginRepository>-->
-    <!--</pluginRepositories>-->
+    <repositories>
+        <repository>
+            <id>oss.jfrog.org</id>
+            <name>Repository from Bintray</name>
+            <url>http://dl.bintray.com/ethereum/maven</url>
+        </repository>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
     <distributionManagement>
         <repository>
-            <id>cars-releases</id>
-            <name>releases</name>
-            <url>http://198.216.6.189:8081/nexus/content/repositories/releases/</url>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-
-        <snapshotRepository>
-            <id>cars-snapshots</id>
-            <name>snapshots</name>
-            <url>http://198.216.6.189:8081/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>component-12306-rpc</groupId>
-            <artifactId>component-12306-rpc</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
@@ -110,11 +68,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.29</version>
         </dependency>
 
     </dependencies>
