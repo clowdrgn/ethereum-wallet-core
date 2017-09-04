@@ -4,7 +4,7 @@ package util.work;
 import util.web3j.transcation.RawTransaction;
 import util.web3j.transcation.TransactionEncoder;
 import util.web3j.wallet.Credentials;
-import util.web3j.wallet.Numeric;
+import util.common.Numeric;
 
 import java.math.BigInteger;
 

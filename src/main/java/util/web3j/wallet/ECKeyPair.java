@@ -2,6 +2,7 @@ package util.web3j.wallet;
 
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
+import util.common.Numeric;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -49,7 +50,7 @@ public class ECKeyPair {
     }
 
     public static ECKeyPair create(byte[] privateKey) {
-        return create(util.web3j.wallet.Numeric.toBigInt(privateKey));
+        return create(Numeric.toBigInt(privateKey));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package util.web3j.wallet;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import util.common.Numeric;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;

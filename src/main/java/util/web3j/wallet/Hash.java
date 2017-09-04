@@ -1,6 +1,7 @@
 package util.web3j.wallet;
 
 import org.bouncycastle.jcajce.provider.digest.Keccak;
+import util.common.Numeric;
 
 /**
  * Crypto related functions.
@@ -15,9 +16,9 @@ public class Hash {
      * @return hash value as hex encoded string
      */
     public static String sha3(String hexInput) {
-        byte[] bytes = util.web3j.wallet.Numeric.hexStringToByteArray(hexInput);
+        byte[] bytes = Numeric.hexStringToByteArray(hexInput);
         byte[] result = sha3(bytes);
-        return util.web3j.wallet.Numeric.toHexString(result);
+        return Numeric.toHexString(result);
     }
 
     /**

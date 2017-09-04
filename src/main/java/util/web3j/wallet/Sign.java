@@ -12,6 +12,7 @@ import org.bouncycastle.math.ec.ECAlgorithms;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.math.ec.FixedPointCombMultiplier;
 import org.bouncycastle.math.ec.custom.sec.SecP256K1Curve;
+import util.common.Numeric;
 
 import java.math.BigInteger;
 import java.security.SignatureException;

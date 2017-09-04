@@ -1,6 +1,8 @@
 package util.web3j.wallet;
 
 
+import util.common.Numeric;
+
 /**
  * Credentials wrapper
  */

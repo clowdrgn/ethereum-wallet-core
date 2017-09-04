@@ -1,5 +1,7 @@
-package util.web3j.wallet;
+package util.common;
 
+
+import util.web3j.wallet.CipherException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
