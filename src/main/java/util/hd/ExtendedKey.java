@@ -1,11 +1,17 @@
 package util.hd;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.Arrays;
+import util.common.Numeric;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
 
 /**
  * Created by Jesion on 2015-01-14.
@@ -14,7 +20,7 @@ import java.io.ByteArrayOutputStream;
  * It composes ECKey class which is responsible for providing Elliptic Curve transformations required to support key derivation.
  */
 public class ExtendedKey {
-
+    private static final byte[] BITCOIN_SEED = "Bitcoin seed".getBytes();
     private static final byte[] xpub = new byte[] { 0x04, (byte) 0x88, (byte) 0xB2, (byte) 0x1E };
     private static final byte[] xprv = new byte[] { 0x04, (byte) 0x88, (byte) 0xAD, (byte) 0xE4 };
 
@@ -23,7 +29,9 @@ public class ExtendedKey {
     private int sequence;
     private int depth;
     private int parentFingerprint;
-
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
     /**
      * Constructing master
      *
@@ -31,7 +39,7 @@ public class ExtendedKey {
      *
      * @param keyHash
      */
-    public ExtendedKey(byte[] keyHash) {
+    public ExtendedKey(byte[] keyHash) throws NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
         this(keyHash, true);
     }
 
@@ -41,8 +49,7 @@ public class ExtendedKey {
      * @param keyHash - Master key hash
      * @param compressed - Indicates if public key is compressed for EC calculations. If true, output will be compatibile with Electrum Wallet, oherwise with Armory (0.92.3)
      */
-    public ExtendedKey(byte[] keyHash, boolean compressed) {
-
+    public ExtendedKey(byte[] keyHash, boolean compressed) throws NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
         this(keyHash, compressed, 0, 0, 0, null);
     }
 
@@ -56,12 +63,15 @@ public class ExtendedKey {
      * @param parentFingerprint - Parent key fingerprint
      * @param ecKey - Parent ECKey
      */
-    public ExtendedKey(byte[] keyHash, boolean compressed, int sequence, int depth, int parentFingerprint, ECKey ecKey) {
-
+    public ExtendedKey(byte[] keyHash, boolean compressed, int sequence, int depth, int parentFingerprint, ECKey ecKey) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
+        Mac mac = Mac.getInstance ("HmacSHA512", "BC");
+        SecretKey seedkey = new SecretKeySpec (BITCOIN_SEED, "HmacSHA512");
+        mac.init (seedkey);
+        byte[] lr = mac.doFinal (keyHash);
         //key hash left side, private key base
-        byte[] l = Arrays.copyOfRange(keyHash, 0, 32);
+        byte[] l = Arrays.copyOfRange(lr, 0, 32);
         //key hash right side, chaincode
-        byte[] r = Arrays.copyOfRange(keyHash, 32, 64);
+        byte[] r = Arrays.copyOfRange(lr, 32, 64);
         //r is chainCode bytes
         this.chainCode = r;
         this.sequence = sequence;
@@ -119,6 +129,7 @@ public class ExtendedKey {
         return this.ecKey;
     }
 
+
     /**
      * Takes a serialized key (public or private) and constructs an instance of ExtendedKey
      *
@@ -158,6 +169,7 @@ public class ExtendedKey {
         child[pub.length + 2] = (byte) ((i >>> 8) & 0xff);
         child[pub.length + 3] = (byte) (i & 0xff);
         byte[] keyHash = mac.doFinal(child);
+//        return new ExtendedKey(keyHash, this.ecKey.isCompressed(), i, this.depth + 1, getFingerPrint(), this.ecKey);
         return new ExtendedKey(keyHash, this.ecKey.isCompressed(), i, this.depth + 1, getFingerPrint(), this.ecKey);
     }
 
